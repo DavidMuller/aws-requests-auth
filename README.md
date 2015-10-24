@@ -1,16 +1,16 @@
-## AWS signature version 4 with python requests
+# AWS Signature Version 4 Signing Process with python requests
 
 This package allows you to authenticate to AWS with Amazon's [signature version 4 signing process](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) with the python [requests](http://docs.python-requests.org/en/latest/) library.
 
 Developed and tested with python `2.7.10`.
 
-## Installation
+# Installation
 
 ```
-pip install pip install requests-auth-aws
+pip install requests-auth-aws
 ```
 
-## Usage
+# Usage
 
 ```python
 from aws_requests_auth.aws_auth import AWSRequestsAuth
@@ -22,7 +22,8 @@ auth = AWSRequestsAuth(aws_access_key='YOURKEY',
                        aws_region='us-east-1',
                        aws_service='es')
 
-response = requests.get('http://search-service-foobar.us-east-1.es.amazonaws.com', auth=auth)
+response = requests.get('http://search-service-foobar.us-east-1.es.amazonaws.com',
+                        auth=auth)
 print response.content
 
 {
@@ -45,7 +46,7 @@ Conceivably, though, the authentication class is flexible enough to be used with
 
 ### elasticsearch-py Client Usage Example
 
-It's possible to inject the `AWSRequestsAuth` class directly into the [elasticsearch-py](https://elasticsearch-py.readthedocs.org/en/master/) library to allow you to talk to your Amazon AWS cluster directly through the elasticsearch-py client.
+It's possible to inject the `AWSRequestsAuth` class directly into the [elasticsearch-py](https://elasticsearch-py.readthedocs.org/en/master/) library so you can talk to your Amazon AWS cluster directly through the elasticsearch-py client.
 
 ```python
 from aws_requests_auth.aws_auth import AWSRequestsAuth
