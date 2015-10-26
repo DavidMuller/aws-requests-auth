@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='aws-requests-auth',
-    version='0.1.0',
+    version='0.2.0',
     author='David Muller',
     author_email='davehmuller@gmail.com',
     packages=['aws_requests_auth'],
