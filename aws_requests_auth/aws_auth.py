@@ -34,7 +34,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
     def __init__(self,
                  aws_access_key,
-                 aws_secret_acces_key,
+                 aws_secret_access_key,
                  aws_host,
                  aws_region,
                  aws_service):
@@ -42,13 +42,13 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         Example usage for talking to an AWS Elasticsearch Service:
 
         AWSRequestsAuth(aws_access_key='YOURKEY',
-                        aws_secret_acces_key='YOURSECRET',
+                        aws_secret_access_key='YOURSECRET',
                         aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
                         aws_region='us-east-1',
                         aws_service='es')
         """
         self.aws_access_key = aws_access_key
-        self.aws_secret_acces_key = aws_secret_acces_key
+        self.aws_secret_access_key = aws_secret_access_key
         self.aws_host = aws_host
         self.aws_region = aws_region
         self.service = aws_service
@@ -108,7 +108,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                           '\n' + hashlib.sha256(canonical_request).hexdigest())
 
         # Create the signing key using the function defined above.
-        signing_key = getSignatureKey(self.aws_secret_acces_key,
+        signing_key = getSignatureKey(self.aws_secret_access_key,
                                       datestamp,
                                       self.aws_region,
                                       self.service)
