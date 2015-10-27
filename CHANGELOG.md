@@ -1,6 +1,11 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.2.1
+------------------
+- Fix bug where cannonical uri was not url encoded appropriately for the signing process
+
+
 0.2.0
 ------------------
 - Fix typos of `aws_secret_access_key` : https://github.com/DavidMuller/aws-requests-auth/pull/1
