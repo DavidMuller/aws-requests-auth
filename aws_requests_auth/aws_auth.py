@@ -1,4 +1,5 @@
 import hmac
+import urllib
 import hashlib
 import datetime
 from urlparse import urlparse
@@ -69,12 +70,13 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         # Create canonical URI--the part of the URI from domain to query
         # string (use '/' if no path)
-        canonical_uri = parsedurl.path if parsedurl.path else '/'
+        canonical_uri = urllib.quote_plus(parsedurl.path if parsedurl.path else '/', safe='/')
 
         # Create the canonical query string. In this example (a GET request),
         # request parameters are in the query string. Query string values must
         # be URL-encoded (space=%20). The parameters must be sorted by name.
-        canonical_querystring = '&'.join(sorted(parsedurl.query.split('&')))
+        querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
+        canonical_querystring = urllib.quote_plus(querystring_sorted)
 
         # Create the canonical headers and signed headers. Header names
         # and value must be trimmed and lowercase, and sorted in ASCII order.
