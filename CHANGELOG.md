@@ -3,7 +3,7 @@ Changelog (aws-requests-auth)
 
 0.2.1
 ------------------
-- Fix bug where cannonical uri was not url encoded appropriately for the signing process
+- Fix bug where cannonical uri and query string was not url encoded appropriately for the signing process
 
 
 0.2.0
