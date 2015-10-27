@@ -70,7 +70,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         # Create canonical URI--the part of the URI from domain to query
         # string (use '/' if no path)
-        canonical_uri = parsedurl.path if parsedurl.path else '/'
+        canonical_uri = urllib.quote_plus(parsedurl.path if parsedurl.path else '/', safe='/')
 
         # Create the canonical query string. In this example (a GET request),
         # request parameters are in the query string. Query string values must
