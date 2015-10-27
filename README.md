@@ -60,7 +60,7 @@ auth = AWSRequestsAuth(aws_access_key='YOURKEY',
                        aws_service='es')
 
 # use the requests connection_class and pass in our custom auth class
-es_client = Elasticsearch(hosts=es_host,
+es_client = Elasticsearch(host=es_host,
                           port=80,
                           connection_class=RequestsHttpConnection,
                           http_auth=auth)
