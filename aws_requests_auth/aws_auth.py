@@ -66,17 +66,9 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         amzdate = t.strftime('%Y%m%dT%H%M%SZ')
         datestamp = t.strftime('%Y%m%d')  # Date w/o time for credential_scope
 
-        parsedurl = urlparse(r.url)
+        canonical_uri = AWSRequestsAuth.get_caononical_path(r)
 
-        # Create canonical URI--the part of the URI from domain to query
-        # string (use '/' if no path)
-        canonical_uri = urllib.quote_plus(parsedurl.path if parsedurl.path else '/', safe='/')
-
-        # Create the canonical query string. In this example (a GET request),
-        # request parameters are in the query string. Query string values must
-        # be URL-encoded (space=%20). The parameters must be sorted by name.
-        querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
-        canonical_querystring = urllib.quote_plus(querystring_sorted)
+        canonical_querystring = AWSRequestsAuth.get_canonical_querystring(r)
 
         # Create the canonical headers and signed headers. Header names
         # and value must be trimmed and lowercase, and sorted in ASCII order.
@@ -131,3 +123,45 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         r.headers['Authorization'] = authorization_header
         r.headers['x-amz-date'] = amzdate
         return r
+
+    @classmethod
+    def get_caononical_path(cls, r):
+        """
+        Create canonical URI--the part of the URI from domain to query
+        string (use '/' if no path)
+        """
+        parsedurl = urlparse(r.url)
+
+        # safe chars adapted from boto's use of urllib.parse.quote
+        # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L393
+        return urllib.quote(parsedurl.path if parsedurl.path else '/', safe='/-_.~')
+
+    @classmethod
+    def get_canonical_querystring(cls, r):
+        """
+        Create the canonical query string. In this example (a GET request),
+        request parameters are in the query string. Query string values must
+        be URL-encoded (space=%20). The parameters must be sorted by name.
+        """
+        canonical_querystring = ''
+        if r.method.lower() == 'post':
+            return canonical_querystring
+
+        parsedurl = urlparse(r.url)
+        querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
+
+        for query_param in querystring_sorted.split('&'):
+            key_val_split = query_param.split('=', 1)
+
+            # safe chars adopted from boto source
+            # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L359-L360
+            key = urllib.quote(key_val_split[0], safe='-_.~')
+            try:
+                val = urllib.quote(key_val_split[1], safe='-_.~')
+            except IndexError:
+                val = ''
+
+            if key:
+                canonical_querystring += u'='.join([key, val])
+
+        return canonical_querystring
