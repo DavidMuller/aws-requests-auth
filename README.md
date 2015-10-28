@@ -14,7 +14,7 @@ pip install requests-auth-aws
 
 This code came about because Amazon's Elasticsearch Service [does not currently support VPC](https://forums.aws.amazon.com/thread.jspa?threadID=217059&tstart=0). This authentication class allows us to talk to our Elasticsearch cluster via [IAM](https://aws.amazon.com/iam/).
 
-Conceivably, though, the authentication class is flexible enough to be used with any AWS service that supports the signature version 4 signing process, but I've only tested it with the Elasticsearch service.
+Conceivably, the authentication class is flexible enough to be used with any AWS service that supports the signature version 4 signing process.  However, I've only tested it with the Elasticsearch service.
 
 
 # Usage
