@@ -70,13 +70,18 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         # Create canonical URI--the part of the URI from domain to query
         # string (use '/' if no path)
-        canonical_uri = urllib.quote_plus(parsedurl.path if parsedurl.path else '/', safe='/')
+        canonical_uri = urllib.quote(parsedurl.path if parsedurl.path else '/', safe='/')
 
-        # Create the canonical query string. In this example (a GET request),
+        # Create the canonical query string.
         # request parameters are in the query string. Query string values must
         # be URL-encoded (space=%20). The parameters must be sorted by name.
-        querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
-        canonical_querystring = urllib.quote_plus(querystring_sorted)
+        if not r.method.lower() == 'post':
+            querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
+
+            # crudely adapted from https://github.com/boto/boto/blob/v2.13.2/boto/auth.py#L365-L366
+            canonical_querystring = urllib.quote_plus(querystring_sorted, safe='-_.~=')
+        else:
+            canonical_querystring = ''
 
         # Create the canonical headers and signed headers. Header names
         # and value must be trimmed and lowercase, and sorted in ASCII order.
@@ -97,7 +102,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         payload_hash = hashlib.sha256(body).hexdigest()
 
         # Combine elements to create create canonical request
-        canonical_request = (r.method + '\n' + canonical_uri + '\n' +
+        canonical_request = (r.method.upper() + '\n' + canonical_uri + '\n' +
                              canonical_querystring + '\n' + canonical_headers +
                              '\n' + signed_headers + '\n' + payload_hash)
 
