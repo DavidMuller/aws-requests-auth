@@ -10,6 +10,13 @@ Developed and tested with python `2.7.10`.
 pip install requests-auth-aws
 ```
 
+# Motivation
+
+This code came about because Amazon's Elasticsearch Service [does not currently support VPC](https://forums.aws.amazon.com/thread.jspa?threadID=217059&tstart=0). This authentication class allows us to talk to our Elasticsearch cluster via [IAM](https://aws.amazon.com/iam/).
+
+Conceivably, though, the authentication class is flexible enough to be used with any AWS service that supports the signature version 4 signing process, but I've only tested it with the Elasticsearch service.
+
+
 # Usage
 
 ```python
@@ -38,13 +45,7 @@ print response.content
 }
 ```
 
-## Motivation
-
-This code came about because Amazon's Elasticsearch Service [does not currently support VPC](https://forums.aws.amazon.com/thread.jspa?threadID=217059&tstart=0). This authentication class allows us to talk to our Elasticsearch cluster via [IAM](https://aws.amazon.com/iam/).
-
-Conceivably, though, the authentication class is flexible enough to be used with any AWS service that supports the signature version 4 signing process.
-
-### elasticsearch-py Client Usage Example
+## elasticsearch-py Client Usage Example
 
 It's possible to inject the `AWSRequestsAuth` class directly into the [elasticsearch-py](https://elasticsearch-py.readthedocs.org/en/master/) library so you can talk to your Amazon AWS cluster directly through the elasticsearch-py client.
 
