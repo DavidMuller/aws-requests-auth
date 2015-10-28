@@ -1,6 +1,11 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.2.2
+------------------
+- Update url quoting for cononical uri and canonical query string
+
+
 0.2.1
 ------------------
 - Fix bug where cannonical uri and query string was not url encoded appropriately for the signing process
