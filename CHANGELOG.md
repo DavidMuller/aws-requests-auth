@@ -3,7 +3,7 @@ Changelog (aws-requests-auth)
 
 0.2.2
 ------------------
-- Update url quoting for cononical uri and canonical query string
+- Update url quoting for canonical uri and canonical query string
 
 
 0.2.1
