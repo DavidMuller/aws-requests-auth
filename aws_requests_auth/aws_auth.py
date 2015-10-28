@@ -79,7 +79,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
             querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
 
             # crudely adapted from https://github.com/boto/boto/blob/v2.13.2/boto/auth.py#L365-L366
-            canonical_querystring = urllib.quote_plus(querystring_sorted, safe='-_.~=')
+            canonical_querystring = urllib.quote(querystring_sorted, safe='-_.~=')
         else:
             canonical_querystring = ''
 
