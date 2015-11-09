@@ -7,7 +7,7 @@ Developed and tested with python `2.7.10`.
 # Installation
 
 ```
-pip install requests-auth-aws
+pip install aws-requests-auth
 ```
 
 # Motivation
@@ -24,7 +24,7 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 # let's talk to our AWS Elasticsearch cluster
 auth = AWSRequestsAuth(aws_access_key='YOURKEY',
-                       aws_secret_acces_key='YOURSECRET',
+                       aws_secret_access_key='YOURSECRET',
                        aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
                        aws_region='us-east-1',
                        aws_service='es')
