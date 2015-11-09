@@ -20,6 +20,7 @@ Conceivably, the authentication class is flexible enough to be used with any AWS
 # Usage
 
 ```python
+import requests
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 # let's talk to our AWS Elasticsearch cluster
