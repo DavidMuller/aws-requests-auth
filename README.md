@@ -55,7 +55,7 @@ from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 es_host = 'search-service-foobar.us-east-1.es.amazonaws.com'
 auth = AWSRequestsAuth(aws_access_key='YOURKEY',
-                       aws_secret_acces_key='YOURSECRET',
+                       aws_secret_access_key='YOURSECRET',
                        aws_host=es_host,
                        aws_region='us-east-1',
                        aws_service='es')
