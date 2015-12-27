@@ -162,6 +162,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                 val = ''
 
             if key:
+                if canonical_querystring:
+                    canonical_querystring += "&"
                 canonical_querystring += u'='.join([key, val])
 
         return canonical_querystring
