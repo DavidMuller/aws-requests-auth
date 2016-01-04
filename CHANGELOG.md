@@ -1,6 +1,15 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.2.3
+------------------
+- Fix handling of multiple query parameters
+    - For example, the two `pretty=True` query paramaters in the following url
+      `http://search-service-foobar.us-east-1.es.amazonaws.com?pretty=True&pretty=True`
+      are now handled properly
+    - see https://github.com/DavidMuller/aws-requests-auth/pull/7
+
+
 0.2.2
 ------------------
 - Update url quoting for canonical uri and canonical query string
