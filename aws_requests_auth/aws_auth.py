@@ -144,8 +144,6 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         be URL-encoded (space=%20). The parameters must be sorted by name.
         """
         canonical_querystring = ''
-        if r.method.lower() == 'post':
-            return canonical_querystring
 
         parsedurl = urlparse(r.url)
         querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
@@ -162,6 +160,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                 val = ''
 
             if key:
+                if canonical_querystring:
+                    canonical_querystring += "&"
                 canonical_querystring += u'='.join([key, val])
 
         return canonical_querystring
