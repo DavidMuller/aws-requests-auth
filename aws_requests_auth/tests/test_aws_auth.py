@@ -54,3 +54,14 @@ class TestAWSRequestsAuth(unittest.TestCase):
         mock_request = mock.Mock()
         mock_request.url = url
         self.assertEqual('scroll=5m&search_type=scan', AWSRequestsAuth.get_canonical_querystring(mock_request))
+
+    def test_multiply_post_request_with_get_param(self):
+        """
+        Assert we generate the 'correct' cannonical query string
+        for request that includes GET-parameters
+        """
+        url = 'http://search-foo.us-east-1.es.amazonaws.com:80/index/type/1/_update?version=1'
+        mock_request = mock.Mock()
+        mock_request.url = url
+        mock_request.method = "POST"
+        self.assertEqual('version=1', AWSRequestsAuth.get_canonical_querystring(mock_request))
