@@ -34,25 +34,64 @@ class AWSRequestsAuth(requests.auth.AuthBase):
     """
 
     def __init__(self,
-                 aws_access_key,
-                 aws_secret_access_key,
                  aws_host,
-                 aws_region,
-                 aws_service):
+                 aws_service,
+                 aws_access_key=None,
+                 aws_secret_access_key=None,
+                 aws_region=None,
+                 headers=None):
         """
         Example usage for talking to an AWS Elasticsearch Service:
 
-        AWSRequestsAuth(aws_access_key='YOURKEY',
+        If an access key, secret access key, or the region is not provided they will be determined
+        using the same method as the aws cli
+
+        AWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
+                        aws_service='es',
+                        aws_access_key='YOURKEY',
                         aws_secret_access_key='YOURSECRET',
-                        aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
-                        aws_region='us-east-1',
-                        aws_service='es')
+                        aws_region='us-east-1')
         """
         self.aws_access_key = aws_access_key
         self.aws_secret_access_key = aws_secret_access_key
         self.aws_host = aws_host
         self.aws_region = aws_region
         self.service = aws_service
+        self.headers = headers if headers else {}
+
+        if not (aws_access_key and aws_secret_access_key):
+            # Attempt to get instance role creds
+
+            metadata_exception = TypeError("AWS credentials not provided, and they cannot be retreived from configuration")
+
+            try:
+                import botocore.session
+            except ImportError:
+                raise metadata_exception
+
+            session = botocore.session.Session()
+            security_creds = session.get_credentials()
+
+            if not security_creds:
+                raise metadata_exception
+
+            self.aws_access_key = security_creds.access_key
+            self.aws_secret_access_key = security_creds.secret_key
+
+            if security_creds.token:
+                self.headers['X-Amz-Security-Token'] = security_creds.token
+
+        if not aws_region:
+
+            try:
+                import boto.session
+            except ImportError:
+                raise TypeError("Unable to determine region")
+
+            session = boto.session.Session()
+            self.aws_region = session.get_config_variable('region')
+        else:
+            self.aws_region = aws_region
 
     def __call__(self, r):
         """
@@ -122,6 +161,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         r.headers['Authorization'] = authorization_header
         r.headers['x-amz-date'] = amzdate
+        r.headers.update(self.headers)
         return r
 
     @classmethod
