@@ -70,3 +70,6 @@ es_client = Elasticsearch(host=es_host,
                           http_auth=auth)
 print es_client.info()
 ```
+
+## Temporary Security Credentials
+If you are using [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) to grant temporary access to your Elasticsearch resource, you can use the `aws_token` keyword argument to include your credentials in `AWSRequestsAuth`.  See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11 for) for additional details. 
