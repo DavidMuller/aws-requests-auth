@@ -1,6 +1,11 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.2.4
+------------------
+- Add support for [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) using the `aws_token` keyword argument to `AWSRequestsAuth`
+    - See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11 for) for additional details
+
 0.2.3
 ------------------
 - Fix handling of multiple query parameters
