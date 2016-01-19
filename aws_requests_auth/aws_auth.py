@@ -38,7 +38,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                  aws_secret_access_key,
                  aws_host,
                  aws_region,
-                 aws_service):
+                 aws_service,
+                 aws_token=None):
         """
         Example usage for talking to an AWS Elasticsearch Service:
 
@@ -46,13 +47,18 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                         aws_secret_access_key='YOURSECRET',
                         aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
                         aws_region='us-east-1',
-                        aws_service='es')
+                        aws_service='es',
+                        aws_token='...')
+
+        The aws_token is optional and is used only if you are using STS
+        temporary credentials.
         """
         self.aws_access_key = aws_access_key
         self.aws_secret_access_key = aws_secret_access_key
         self.aws_host = aws_host
         self.aws_region = aws_region
         self.service = aws_service
+        self.aws_token = aws_token
 
     def __call__(self, r):
         """
@@ -75,6 +81,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # Note that there is a trailing \n.
         canonical_headers = ('host:' + self.aws_host + '\n' +
                              'x-amz-date:' + amzdate + '\n')
+        if self.aws_token:
+            canonical_headers += 'x-amz-security-token:' + self.aws_token + '\n'
 
         # Create the list of signed headers. This lists the headers
         # in the canonical_headers list, delimited with ";" and in alpha order.
@@ -82,6 +90,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # signed_headers lists those that you want to be included in the
         # hash of the request. "Host" and "x-amz-date" are always required.
         signed_headers = 'host;x-amz-date'
+        if self.aws_token:
+            signed_headers += ';x-amz-security-token'
 
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
@@ -122,6 +132,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         r.headers['Authorization'] = authorization_header
         r.headers['x-amz-date'] = amzdate
+        if self.aws_token:
+            r.headers['X-Amz-Security-Token'] = self.aws_token
         return r
 
     @classmethod
