@@ -166,9 +166,9 @@ class AWSRequestsAuth(requests.auth.AuthBase):
             # safe chars adopted from boto source
             # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L359-L360
             key = urllib.quote(key_val_split[0], safe='-_.~')
-            try:
-                val = urllib.quote(key_val_split[1], safe='-_.~')
-            except IndexError:
+            if len(key_val_split) > 1:
+                val = key_val_split[1]
+            else:
                 val = ''
 
             if key:
