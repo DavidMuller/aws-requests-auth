@@ -162,7 +162,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         request is incorrect.
 
         It appears elasticsearc-py url encodes query paramaters on its own:
-            https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/connection/http_requests.py#L58
+            https://github.com/elastic/elasticsearch-py/blob/5dfd6985e5d32ea353d2b37d01c2521b2089ac2b/elasticsearch/connection/http_requests.py#L64
 
         If you are using a different client than elasticsearch-py, it
         will be your responsibility to urleconde your query params before
