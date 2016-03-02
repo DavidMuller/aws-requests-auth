@@ -151,9 +151,22 @@ class AWSRequestsAuth(requests.auth.AuthBase):
     @classmethod
     def get_canonical_querystring(cls, r):
         """
-        Create the canonical query string. In this example (a GET request),
-        request parameters are in the query string. Query string values must
-        be URL-encoded (space=%20). The parameters must be sorted by name.
+        Create the canonical query string. According to AWS, by the
+        end of this function our query string values must
+        be URL-encoded (space=%20) and the parameters must be sorted
+        by name.
+
+        This method assumes that the query params in `r` are *already*
+        url encoded.  If they are not url encoded by the time they make
+        it to this function, AWS may complain that the signature for your
+        request is incorrect.
+
+        It appears elasticsearc-py url encodes query paramaters on its own:
+            https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/connection/http_requests.py#L58
+
+        If you are using a different client than elasticsearch-py, it
+        will be your responsibility to urleconde your query params before
+        this method is called.
         """
         canonical_querystring = ''
 
@@ -163,12 +176,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         for query_param in querystring_sorted.split('&'):
             key_val_split = query_param.split('=', 1)
 
-            # safe chars adopted from boto source
-            # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L359-L360
-            key = urllib.quote(key_val_split[0], safe='-_.~')
-            try:
-                val = urllib.quote(key_val_split[1], safe='-_.~')
-            except IndexError:
+            key = key_val_split[0]
+            if len(key_val_split) > 1:
+                val = key_val_split[1]
+            else:
                 val = ''
 
             if key:
