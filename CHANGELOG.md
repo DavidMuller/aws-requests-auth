@@ -1,6 +1,12 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.2.5
+------------------
+- Stop urlencoding query params in get_canonical_querystring(). The urlencoding in get_canonical_querystring() was causing "double encoding issues" because elasticsearch-py already apperas to urlencode query params
+    - If you are using a client other than elasticsearch-py, you will need to be sure that your client urlecondes your query params before they are passed to the `AWSRequests` auth class
+    - See https://github.com/DavidMuller/aws-requests-auth/pull/13 for more details
+
 0.2.4
 ------------------
 - Add support for [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) using the `aws_token` keyword argument to `AWSRequestsAuth`
