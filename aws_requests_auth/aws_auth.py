@@ -2,7 +2,7 @@ import hmac
 import urllib
 import hashlib
 import datetime
-from urllib.parse import urlparse, quote
+from six.moves.urllib.parse import quote, urlparse
 
 import requests
 
