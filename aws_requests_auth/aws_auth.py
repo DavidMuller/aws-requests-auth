@@ -1,8 +1,13 @@
 import hmac
-import urllib
 import hashlib
 import datetime
-from urlparse import urlparse
+try:
+    # python 2
+    from urllib import quote
+    from urlparse import urlparse
+except ImportError:
+    # python 3
+    from urllib.parse import quote, urlparse
 
 import requests
 
@@ -95,7 +100,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
-        body = r.body if r.body else ''
+        body = r.body if r.body else bytes()
         payload_hash = hashlib.sha256(body).hexdigest()
 
         # Combine elements to create create canonical request
@@ -109,7 +114,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         credential_scope = (datestamp + '/' + self.aws_region + '/' +
                             self.service +'/' + 'aws4_request')
         string_to_sign = (algorithm + '\n' + amzdate + '\n' + credential_scope +
-                          '\n' + hashlib.sha256(canonical_request).hexdigest())
+                          '\n' + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
 
         # Create the signing key using the function defined above.
         signing_key = getSignatureKey(self.aws_secret_access_key,
@@ -146,7 +151,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         # safe chars adapted from boto's use of urllib.parse.quote
         # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L393
-        return urllib.quote(parsedurl.path if parsedurl.path else '/', safe='/-_.~')
+        return quote(parsedurl.path if parsedurl.path else '/', safe='/-_.~')
 
     @classmethod
     def get_canonical_querystring(cls, r):
