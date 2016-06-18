@@ -20,7 +20,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
         url = 'http://search-foo.us-east-1.es.amazonaws.com:80/'
         mock_request = mock.Mock()
         mock_request.url = url
-        self.assertEqual('/', AWSRequestsAuth.get_caononical_path(mock_request))
+        self.assertEqual('/', AWSRequestsAuth.get_canonical_path(mock_request))
         self.assertEqual('', AWSRequestsAuth.get_canonical_querystring(mock_request))
 
     def test_characters_escaped_in_path(self):
@@ -31,7 +31,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
         url = 'http://search-foo.us-east-1.es.amazonaws.com:80/+foo.*/_stats'
         mock_request = mock.Mock()
         mock_request.url = url
-        self.assertEqual('/%2Bfoo.%2A/_stats', AWSRequestsAuth.get_caononical_path(mock_request))
+        self.assertEqual('/%2Bfoo.%2A/_stats', AWSRequestsAuth.get_canonical_path(mock_request))
         self.assertEqual('', AWSRequestsAuth.get_canonical_querystring(mock_request))
 
     def test_path_with_querystring(self):
@@ -42,7 +42,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
         url = 'http://search-foo.us-east-1.es.amazonaws.com:80/my_index/?pretty=True'
         mock_request = mock.Mock()
         mock_request.url = url
-        self.assertEqual('/my_index/', AWSRequestsAuth.get_caononical_path(mock_request))
+        self.assertEqual('/my_index/', AWSRequestsAuth.get_canonical_path(mock_request))
         self.assertEqual('pretty=True', AWSRequestsAuth.get_canonical_querystring(mock_request))
 
     def test_multiple_get_params(self):

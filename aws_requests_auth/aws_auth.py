@@ -72,7 +72,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         amzdate = t.strftime('%Y%m%dT%H%M%SZ')
         datestamp = t.strftime('%Y%m%d')  # Date w/o time for credential_scope
 
-        canonical_uri = AWSRequestsAuth.get_caononical_path(r)
+        canonical_uri = AWSRequestsAuth.get_canonical_path(r)
 
         canonical_querystring = AWSRequestsAuth.get_canonical_querystring(r)
 
@@ -137,7 +137,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         return r
 
     @classmethod
-    def get_caononical_path(cls, r):
+    def get_canonical_path(cls, r):
         """
         Create canonical URI--the part of the URI from domain to query
         string (use '/' if no path)
