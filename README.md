@@ -4,7 +4,7 @@
 
 This package allows you to authenticate to AWS with Amazon's [signature version 4 signing process](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) with the python [requests](http://docs.python-requests.org/en/latest/) library.
 
-Developed and tested with python `2.7.10`.
+Tested with both python `2.7` and `3.4`.
 
 # Installation
 
