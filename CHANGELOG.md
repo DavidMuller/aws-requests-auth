@@ -1,6 +1,11 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.3.0
+------------------
+- Add python3 support -- thanks to @jlaine, and @anantasty
+   - See https://github.com/DavidMuller/aws-requests-auth/pull/16
+
 0.2.5
 ------------------
 - Stop urlencoding query params in get_canonical_querystring(). The urlencoding in get_canonical_querystring() was causing "double encoding issues" because elasticsearch-py already apperas to urlencode query params
