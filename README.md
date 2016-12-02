@@ -73,3 +73,20 @@ print es_client.info()
 
 ## Temporary Security Credentials
 If you are using [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) to grant temporary access to your Elasticsearch resource, you can use the `aws_token` keyword argument to include your credentials in `AWSRequestsAuth`.  See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11 for) for additional details. 
+
+## AWS Lambda Quickstart Example
+If you are using an AWS lamba to talk to your Elasticsearch cluster and you've assigned an IAM role to your lambda function that allows the lambda to communicate with your Elasticserach cluster, you can instantiate an instance of AWSRequestsAuth by reading your credentials from environment variables:
+```python
+import os
+from aws_requests_auth.aws_auth import AWSRequestsAuth
+
+def lambda_handler(event, context):
+    auth = AWSRequestsAuth(aws_access_key=os.environ['AWS_ACCESS_KEY_ID'],
+                           aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
+                           aws_token=os.environ['AWS_SESSION_TOKEN'],
+                           aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
+                           aws_region='us-east-1',
+                           aws_service='es')
+    print 'My lambda finished executing'                           
+```
+`'AWS_ACCESS_KEY_ID'`, `'AWS_SECRET_ACCESS_KEY'`, `'AWS_SESSION_TOKEN'` are [reserved environment variables in AWS lambdas](https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html#lambda-environment-variables).
