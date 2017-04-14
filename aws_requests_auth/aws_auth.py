@@ -101,7 +101,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
         body = r.body if r.body else bytes()
-        payload_hash = hashlib.sha256(body).hexdigest()
+        payload_hash = hashlib.sha256(body.encode('utf-8')).hexdigest()
 
         # Combine elements to create create canonical request
         canonical_request = (r.method + '\n' + canonical_uri + '\n' +
