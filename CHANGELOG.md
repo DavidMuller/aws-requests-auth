@@ -1,6 +1,12 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.3.1
+------------------
+- Patch encoding error on python 3.6
+    - See https://github.com/DavidMuller/aws-requests-auth/pull/21
+
+
 0.3.0
 ------------------
 - Add python3 support -- thanks to @jlaine, and @anantasty
