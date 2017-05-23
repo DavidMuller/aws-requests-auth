@@ -1,6 +1,10 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.3.2
+------------------
+- Enable dynamic pulling of AWS credentials via boto3
+
 0.3.1
 ------------------
 - Patch encoding error on python 3.6

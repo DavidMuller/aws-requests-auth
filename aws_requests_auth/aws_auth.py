@@ -1,6 +1,7 @@
 import hmac
 import hashlib
 import datetime
+
 try:
     # python 2
     from urllib import quote
@@ -65,6 +66,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         self.service = aws_service
         self.aws_token = aws_token
 
+
     def __call__(self, r):
         """
         Adds the authorization headers required by Amazon's signature
@@ -116,7 +118,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # SHA-256 (recommended)
         algorithm = 'AWS4-HMAC-SHA256'
         credential_scope = (datestamp + '/' + self.aws_region + '/' +
-                            self.service +'/' + 'aws4_request')
+                            self.service + '/' + 'aws4_request')
         string_to_sign = (algorithm + '\n' + amzdate + '\n' + credential_scope +
                           '\n' + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
 
@@ -197,3 +199,5 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                 canonical_querystring += u'='.join([key, val])
 
         return canonical_querystring
+
+
