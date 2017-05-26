@@ -91,7 +91,7 @@ def lambda_handler(event, context):
 ```
 `'AWS_ACCESS_KEY_ID'`, `'AWS_SECRET_ACCESS_KEY'`, `'AWS_SESSION_TOKEN'` are [reserved environment variables in AWS lambdas](https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html#lambda-environment-variables).
 
-## Using Boto3 To Automatically Gather AWS Credentials
+## Using boto3 To Automatically Gather AWS Credentials
 `boto3` is not a strict requirement of `aws-requests-auth`, but we do provide some convenience methods if you'd like to use `boto3` to automatically retrieve your AWS credentials for you.
 
 `boto3` [can dynamically pull AWS credentials from environment variables, AWS config files, IAM Role,
