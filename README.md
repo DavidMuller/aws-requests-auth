@@ -90,3 +90,30 @@ def lambda_handler(event, context):
     print 'My lambda finished executing'                           
 ```
 `'AWS_ACCESS_KEY_ID'`, `'AWS_SECRET_ACCESS_KEY'`, `'AWS_SESSION_TOKEN'` are [reserved environment variables in AWS lambdas](https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html#lambda-environment-variables).
+
+# Using Boto To Automatically Gather AWS Credentials
+`boto` is not a strict requirement of `aws-requests-auth`, but we do provide some convenience methods for using `boto` to automatically retrieve your 
+AWS credentials for you.
+
+`boto` can dynamically pull AWS credentials from environment variables, AWS config files, IAM Role, 
+and other locations ([see here for more info](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials)).
+This can come in handy if you need to run a program leveraging `aws-requests-auth` in several places where you may
+authenticate in different manners. For example, you may rely on a `.aws/credentials` file when running on your
+local machine, but use an IAM role when running your program in a docker container in the cloud. By leveraging this option,
+your program's authentication will work anywhere that `boto` can find AWS credentials.
+
+If you would like to take advantage of this functionality, initialize your AWSRequestsAuth as follows:
+
+```python
+from aws_requests_auth.aws_auth import AWSRequestsAuth
+from aws_requests_auth import boto_utils
+
+auth = AWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
+                       aws_region='us-east-1',
+                       aws_service='es',
+                       **boto_utils.get_credentials())
+```
+
+Since `boto` is not a strict requirement of `aws-requests-auth`, make sure to install it if you have not already:
+
+```pip install boto3```
