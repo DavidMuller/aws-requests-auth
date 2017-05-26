@@ -66,7 +66,6 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         self.service = aws_service
         self.aws_token = aws_token
 
-
     def __call__(self, r):
         """
         Adds the authorization headers required by Amazon's signature
@@ -199,5 +198,3 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                 canonical_querystring += u'='.join([key, val])
 
         return canonical_querystring
-
-
