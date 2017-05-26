@@ -72,7 +72,7 @@ print es_client.info()
 ```
 
 ## Temporary Security Credentials
-If you are using [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) to grant temporary access to your Elasticsearch resource, you can use the `aws_token` keyword argument to include your credentials in `AWSRequestsAuth`.  See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11 for) for additional details. 
+If you are using [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) to grant temporary access to your Elasticsearch resource, you can use the `aws_token` keyword argument to include your credentials in `AWSRequestsAuth`.  See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11 for) for additional details.
 
 ## AWS Lambda Quickstart Example
 If you are using an AWS lamba to talk to your Elasticsearch cluster and you've assigned an IAM role to your lambda function that allows the lambda to communicate with your Elasticserach cluster, you can instantiate an instance of AWSRequestsAuth by reading your credentials from environment variables:
@@ -91,21 +91,20 @@ def lambda_handler(event, context):
 ```
 `'AWS_ACCESS_KEY_ID'`, `'AWS_SECRET_ACCESS_KEY'`, `'AWS_SESSION_TOKEN'` are [reserved environment variables in AWS lambdas](https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html#lambda-environment-variables).
 
-# Using Boto To Automatically Gather AWS Credentials
-`boto` is not a strict requirement of `aws-requests-auth`, but we do provide some convenience methods for using `boto` to automatically retrieve your 
-AWS credentials for you.
+## Using Boto3 To Automatically Gather AWS Credentials
+`boto3` is not a strict requirement of `aws-requests-auth`, but we do provide some convenience methods if you'd like to use `boto3` to automatically retrieve your AWS credentials for you.
 
-`boto` can dynamically pull AWS credentials from environment variables, AWS config files, IAM Role, 
-and other locations ([see here for more info](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials)).
-This can come in handy if you need to run a program leveraging `aws-requests-auth` in several places where you may
-authenticate in different manners. For example, you may rely on a `.aws/credentials` file when running on your
-local machine, but use an IAM role when running your program in a docker container in the cloud. By leveraging this option,
-your program's authentication will work anywhere that `boto` can find AWS credentials.
+`boto3` [can dynamically pull AWS credentials from environment variables, AWS config files, IAM Role,
+and other locations](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials). Dynamic credential fetching can come in handy if you need to run a program leveraging `aws-requests-auth` in several places where you may authenticate in different manners. For example, you may rely on a `.aws/credentials` file when running on your local machine, but use an IAM role when running your program in a docker container in the cloud.
 
-If you would like to take advantage of this functionality, initialize your AWSRequestsAuth as follows:
+To take advantage of these conveniences, and help you authenticate wherever `boto3` finds AWS credentials, you can import the `boto_utils` file and initialize `AWSRequestsAuth` as follows:
 
 ```python
 from aws_requests_auth.aws_auth import AWSRequestsAuth
+
+# note that this line will fail if you do not have boto3 installed
+# boto3 installation instructions available here:
+# https://boto3.readthedocs.io/en/latest/guide/quickstart.html#installation
 from aws_requests_auth import boto_utils
 
 auth = AWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
@@ -113,7 +112,3 @@ auth = AWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.co
                        aws_service='es',
                        **boto_utils.get_credentials())
 ```
-
-Since `boto` is not a strict requirement of `aws-requests-auth`, make sure to install it if you have not already:
-
-```pip install boto3```
