@@ -3,7 +3,9 @@ Changelog (aws-requests-auth)
 
 0.3.2
 ------------------
-- Enable dynamic pulling of AWS credentials via boto3
+- Add convenience methods for dynamically pulling AWS credentials via boto3
+    - Thanks to @schobster: https://github.com/DavidMuller/aws-requests-auth/pull/22
+
 
 0.3.1
 ------------------
