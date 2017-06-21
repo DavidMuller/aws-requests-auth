@@ -1,6 +1,11 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.3.3
+------------------
+- Add classifiers to the pypi distribution
+
+
 0.3.2
 ------------------
 - Add convenience methods for dynamically pulling AWS credentials via boto3
