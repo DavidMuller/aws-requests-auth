@@ -20,4 +20,5 @@ def get_credentials():
         'aws_access_key': credentials_obj.access_key,
         'aws_secret_access_key': credentials_obj.secret_key,
         'aws_token': credentials_obj.token,
+        'aws_region': boto3.session.Session().region_name
     }
