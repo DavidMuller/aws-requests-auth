@@ -91,24 +91,23 @@ def lambda_handler(event, context):
 ```
 `'AWS_ACCESS_KEY_ID'`, `'AWS_SECRET_ACCESS_KEY'`, `'AWS_SESSION_TOKEN'` are [reserved environment variables in AWS lambdas](https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html#lambda-environment-variables).
 
-## Using boto3 To Automatically Gather AWS Credentials
-`boto3` is not a strict requirement of `aws-requests-auth`, but we do provide some convenience methods if you'd like to use `boto3` to automatically retrieve your AWS credentials for you.
+## Using Boto To Automatically Gather AWS Credentials
+`botocore` (the core functionality of `boto3`) is not a strict requirement of `aws-requests-auth`, but we do provide some convenience methods if you'd like to use `botocore` to automatically retrieve your AWS credentials for you.
 
-`boto3` [can dynamically pull AWS credentials from environment variables, AWS config files, IAM Role,
+`botocore` [can dynamically pull AWS credentials from environment variables, AWS config files, IAM Role,
 and other locations](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials). Dynamic credential fetching can come in handy if you need to run a program leveraging `aws-requests-auth` in several places where you may authenticate in different manners. For example, you may rely on a `.aws/credentials` file when running on your local machine, but use an IAM role when running your program in a docker container in the cloud.
 
-To take advantage of these conveniences, and help you authenticate wherever `boto3` finds AWS credentials, you can import the `boto_utils` file and initialize `AWSRequestsAuth` as follows:
+To take advantage of these conveniences, and help you authenticate wherever `botocore` finds AWS credentials, you can import the `boto_utils` file and initialize `BotoAWSRequestsAuth` as follows:
 
 ```python
-from aws_requests_auth.aws_auth import AWSRequestsAuth
-
-# note that this line will fail if you do not have boto3 installed
-# boto3 installation instructions available here:
+# note that this line will fail if you do not have botocore installed
+# botocore installation instructions available here:
 # https://boto3.readthedocs.io/en/latest/guide/quickstart.html#installation
-from aws_requests_auth import boto_utils
+from aws_requests_auth.boto_utils import BotoAWSRequestsAuth
 
-auth = AWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
+auth = BotoAWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
                        aws_region='us-east-1',
-                       aws_service='es',
-                       **boto_utils.get_credentials())
+                       aws_service='es')
 ```
+
+Credentials are only accessed when needed at runtime, and they will be refreshed using the underlying methods in `botocore` if needed.
