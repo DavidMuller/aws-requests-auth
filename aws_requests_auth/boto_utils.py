@@ -43,11 +43,11 @@ class BotoAWSRequestsAuth(AWSRequestsAuth):
         automatically from the environment, in the order described here:
         http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials
         """
-        super().__init__(None, None, aws_host, aws_region, aws_service)
+        super(BotoAWSRequestsAuth, self).__init__(None, None, aws_host, aws_region, aws_service)
         self._refreshable_credentials = Session().get_credentials()
 
     def __call__(self, r):
         # update credentials immediately before each call in case they expired
         for k, v in get_credentials(self._refreshable_credentials).items():
             setattr(self, k, v)
-        return super().__call__(r)
+        return super(BotoAWSRequestsAuth, self).__call__(r)
