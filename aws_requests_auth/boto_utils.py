@@ -47,7 +47,7 @@ class BotoAWSRequestsAuth(AWSRequestsAuth):
         self._refreshable_credentials = Session().get_credentials()
 
     def __call__(self, r):
-        # update credentials immediately before each call in case they expired
-        for k, v in get_credentials(self._refreshable_credentials).items():
-            setattr(self, k, v)
-        return super(BotoAWSRequestsAuth, self).__call__(r)
+        # provide credentials explicitly for each __call__, to take advantage of botocore's
+        # underlying logic to refresh expired credentials
+        credentials = get_credentials(self._refreshable_credentials)
+        return super(BotoAWSRequestsAuth, self).__call__(r, **credentials)
