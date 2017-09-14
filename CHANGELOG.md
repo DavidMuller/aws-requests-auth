@@ -1,6 +1,12 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.4.0
+------------------
+- Add `BotoAWSRequestsAuth` convenience class which automatically gathers (and refreshes) AWS credentials using botocore
+    - Contributed by @tobiasmcnulty: https://github.com/DavidMuller/aws-requests-auth/pull/29
+
+
 0.3.3
 ------------------
 - Add classifiers to the pypi distribution
