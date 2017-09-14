@@ -66,7 +66,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         self.service = aws_service
         self.aws_token = aws_token
 
-    def __call__(self, r):
+    def __call__(self, r, aws_access_key=None, aws_secret_access_key=None, aws_token=None):
         """
         Adds the authorization headers required by Amazon's signature
         version 4 signing process to the request.
@@ -78,6 +78,14 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         amzdate = t.strftime('%Y%m%dT%H%M%SZ')
         datestamp = t.strftime('%Y%m%d')  # Date w/o time for credential_scope
 
+        # Fall back to credentials passed via __init__, if not provided to this __call__
+        if aws_access_key is None:
+            aws_access_key = self.aws_access_key
+        if aws_secret_access_key is None:
+            aws_secret_access_key = self.aws_secret_access_key
+        if aws_token is None:
+            aws_token = self.aws_token
+
         canonical_uri = AWSRequestsAuth.get_canonical_path(r)
 
         canonical_querystring = AWSRequestsAuth.get_canonical_querystring(r)
@@ -87,8 +95,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # Note that there is a trailing \n.
         canonical_headers = ('host:' + self.aws_host + '\n' +
                              'x-amz-date:' + amzdate + '\n')
-        if self.aws_token:
-            canonical_headers += 'x-amz-security-token:' + self.aws_token + '\n'
+        if aws_token:
+            canonical_headers += 'x-amz-security-token:' + aws_token + '\n'
 
         # Create the list of signed headers. This lists the headers
         # in the canonical_headers list, delimited with ";" and in alpha order.
@@ -96,7 +104,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # signed_headers lists those that you want to be included in the
         # hash of the request. "Host" and "x-amz-date" are always required.
         signed_headers = 'host;x-amz-date'
-        if self.aws_token:
+        if aws_token:
             signed_headers += ';x-amz-security-token'
 
         # Create payload hash (hash of the request body content). For GET
@@ -122,7 +130,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                           '\n' + hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
 
         # Create the signing key using the function defined above.
-        signing_key = getSignatureKey(self.aws_secret_access_key,
+        signing_key = getSignatureKey(aws_secret_access_key,
                                       datestamp,
                                       self.aws_region,
                                       self.service)
@@ -136,14 +144,14 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # The signing information can be either in a query string value or in
         # a header named Authorization. This code shows how to use a header.
         # Create authorization header and add to request headers
-        authorization_header = (algorithm + ' ' + 'Credential=' + self.aws_access_key +
+        authorization_header = (algorithm + ' ' + 'Credential=' + aws_access_key +
                                 '/' + credential_scope + ', ' + 'SignedHeaders=' +
                                 signed_headers + ', ' + 'Signature=' + signature)
 
         r.headers['Authorization'] = authorization_header
         r.headers['x-amz-date'] = amzdate
-        if self.aws_token:
-            r.headers['X-Amz-Security-Token'] = self.aws_token
+        if aws_token:
+            r.headers['X-Amz-Security-Token'] = aws_token
         return r
 
     @classmethod
