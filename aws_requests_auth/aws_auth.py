@@ -134,7 +134,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         body = r.body if r.body else bytes()
         try:
             body = body.encode('utf-8')
-        except AttributeError:
+        except (AttributeError, UnicodeDecodeError) as error:
             body = body
         payload_hash = hashlib.sha256(body).hexdigest()
 
