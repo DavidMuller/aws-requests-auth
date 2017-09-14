@@ -66,25 +66,47 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         self.service = aws_service
         self.aws_token = aws_token
 
-    def __call__(self, r, aws_access_key=None, aws_secret_access_key=None, aws_token=None):
+    def __call__(self, r):
         """
         Adds the authorization headers required by Amazon's signature
         version 4 signing process to the request.
 
         Adapted from https://docs.aws.amazon.com/general/latest/gr/sigv4-signed-request-examples.html
         """
+        aws_headers = self.get_aws_request_headers_handler(r)
+        r.headers.update(aws_headers)
+        return r
+
+    def get_aws_request_headers_handler(self, r):
+        """
+        Override get_aws_request_headers_handler() if you have a
+        subclass that needs to call get_aws_request_headers() with
+        an arbitrary set of AWS credentials. The default implementation
+        calls get_aws_request_headers() with self.aws_access_key,
+        self.aws_secret_access_key, and self.aws_token
+        """
+        return self.get_aws_request_headers(r=r,
+                                            aws_access_key=self.aws_access_key,
+                                            aws_secret_access_key=self.aws_secret_access_key,
+                                            aws_token=self.aws_token)
+
+    def get_aws_request_headers(self, r, aws_access_key, aws_secret_access_key, aws_token):
+        """
+        Returns a dictionary containing the necessary headers for Amazon's
+        signature version 4 signing process. An example return value might
+        look like
+
+            {
+                'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+                                 'SignedHeaders=host;x-amz-date, '
+                                 'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
+                'x-amz-date': '20160618T220405Z',
+            }
+        """
         # Create a date for headers and the credential string
         t = datetime.datetime.utcnow()
         amzdate = t.strftime('%Y%m%dT%H%M%SZ')
         datestamp = t.strftime('%Y%m%d')  # Date w/o time for credential_scope
-
-        # Fall back to credentials passed via __init__, if not provided to this __call__
-        if aws_access_key is None:
-            aws_access_key = self.aws_access_key
-        if aws_secret_access_key is None:
-            aws_secret_access_key = self.aws_secret_access_key
-        if aws_token is None:
-            aws_token = self.aws_token
 
         canonical_uri = AWSRequestsAuth.get_canonical_path(r)
 
@@ -148,11 +170,13 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                                 '/' + credential_scope + ', ' + 'SignedHeaders=' +
                                 signed_headers + ', ' + 'Signature=' + signature)
 
-        r.headers['Authorization'] = authorization_header
-        r.headers['x-amz-date'] = amzdate
+        headers = {
+            'Authorization': authorization_header,
+            'x-amz-date': amzdate,
+        }
         if aws_token:
-            r.headers['X-Amz-Security-Token'] = aws_token
-        return r
+            headers['X-Amz-Security-Token'] = aws_token
+        return headers
 
     @classmethod
     def get_canonical_path(cls, r):
