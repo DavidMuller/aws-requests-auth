@@ -106,8 +106,8 @@ To take advantage of these conveniences, and help you authenticate wherever `bot
 from aws_requests_auth.boto_utils import BotoAWSRequestsAuth
 
 auth = BotoAWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaws.com',
-                       aws_region='us-east-1',
-                       aws_service='es')
+                           aws_region='us-east-1',
+                           aws_service='es')
 ```
 
 Credentials are only accessed when needed at runtime, and they will be refreshed using the underlying methods in `botocore` if needed.
