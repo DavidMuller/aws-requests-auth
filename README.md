@@ -72,7 +72,7 @@ print es_client.info()
 ```
 
 ## Temporary Security Credentials
-If you are using [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) to grant temporary access to your Elasticsearch resource, you can use the `aws_token` keyword argument to include your credentials in `AWSRequestsAuth`.  See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11 for) for additional details.
+If you are using [AWS STS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html) to grant temporary access to your Elasticsearch resource, you can use the `aws_token` keyword argument to include your credentials in `AWSRequestsAuth`.  See [issue #9](https://github.com/DavidMuller/aws-requests-auth/issues/9) and [PR #11](https://github.com/DavidMuller/aws-requests-auth/pull/11) for additional details.
 
 ## AWS Lambda Quickstart Example
 If you are using an AWS lamba to talk to your Elasticsearch cluster and you've assigned an IAM role to your lambda function that allows the lambda to communicate with your Elasticserach cluster, you can instantiate an instance of AWSRequestsAuth by reading your credentials from environment variables:
