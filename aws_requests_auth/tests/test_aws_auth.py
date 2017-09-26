@@ -1,5 +1,6 @@
 import datetime
 import mock
+import sys
 import unittest
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
@@ -143,6 +144,72 @@ class TestAWSRequestsAuth(unittest.TestCase):
             'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
                              'SignedHeaders=host;x-amz-date, '
                              'Signature=a6fd88e5f5c43e005482894001d9b05b43f6710e96be6098bcfcfccdeb8ed812',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'x-amz-date': '20160618T220405Z',
+
+        }, mock_request.headers)
+
+    @unittest.skipIf(
+        int(sys.version[0]) > 2,
+        'python3 produces a different hash that we\'re comparing.',
+    )
+    def test_auth_for_post_with_unicode_body_python2(self):
+        auth = AWSRequestsAuth(aws_access_key='YOURKEY',
+                               aws_secret_access_key='YOURSECRET',
+                               aws_host='search-foo.us-east-1.es.amazonaws.com',
+                               aws_region='us-east-1',
+                               aws_service='es')
+        url = 'http://search-foo.us-east-1.es.amazonaws.com:80/'
+        mock_request = mock.Mock()
+        mock_request.url = url
+        mock_request.method = "POST"
+        mock_request.body = 'foo=bar\xc3'
+        mock_request.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+
+        frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
+        with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = frozen_datetime
+            auth(mock_request)
+
+        self.assertEqual({
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+            'SignedHeaders=host;x-amz-date, '
+            'Signature=88046be72423b267de5e7e604aaffb2c5668c3fd9022ef4aac8287b82ab71124',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'x-amz-date': '20160618T220405Z',
+
+        }, mock_request.headers)
+
+    @unittest.skipIf(
+        int(sys.version[0]) < 3,
+        'python3 produces a different hash that we\'re comparing.'
+    )
+    def test_auth_for_post_with_unicode_body_python3(self):
+        auth = AWSRequestsAuth(aws_access_key='YOURKEY',
+                               aws_secret_access_key='YOURSECRET',
+                               aws_host='search-foo.us-east-1.es.amazonaws.com',
+                               aws_region='us-east-1',
+                               aws_service='es')
+        url = 'http://search-foo.us-east-1.es.amazonaws.com:80/'
+        mock_request = mock.Mock()
+        mock_request.url = url
+        mock_request.method = "POST"
+        mock_request.body = 'foo=bar\xc3'
+        mock_request.headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+
+        frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
+        with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = frozen_datetime
+            auth(mock_request)
+
+        self.assertEqual({
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+            'SignedHeaders=host;x-amz-date, '
+            'Signature=0836dae4bce95c1bcdbd3751c84c0c7e589ba7c81331bab92d0e1acb94adcdd9',
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
 

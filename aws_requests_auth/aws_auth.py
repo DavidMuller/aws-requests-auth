@@ -134,7 +134,14 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         body = r.body if r.body else bytes()
         try:
             body = body.encode('utf-8')
-        except AttributeError:
+        except (AttributeError, UnicodeDecodeError):
+            # On py2, if unicode characters in present in `body`,
+            # encode() throws UnicodeDecodeError, but we can safely
+            # pass unencoded `body` to execute hexdigest().
+            #
+            # For py3, encode() will execute successfully regardless
+            # of the presence of unicode data
+
             body = body
         payload_hash = hashlib.sha256(body).hexdigest()
 
