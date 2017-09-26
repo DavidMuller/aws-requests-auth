@@ -141,8 +141,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
             #
             # For py3, encode() will execute successfully regardless
             # of the presence of unicode data
-
             body = body
+
         payload_hash = hashlib.sha256(body).hexdigest()
 
         # Combine elements to create create canonical request
