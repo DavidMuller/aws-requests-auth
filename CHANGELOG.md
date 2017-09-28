@@ -1,6 +1,12 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.4.1
+------------------
+- Allow utf-8 encoding failures for python2 on the request body for hashing
+    - Contributed by @bigjust: https://github.com/DavidMuller/aws-requests-auth/pull/30
+
+
 0.4.0
 ------------------
 - Add `BotoAWSRequestsAuth` convenience class which automatically gathers (and refreshes) AWS credentials using botocore
