@@ -4,20 +4,15 @@
 
 This package allows you to authenticate to AWS with Amazon's [signature version 4 signing process](https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html) with the python [requests](http://docs.python-requests.org/en/latest/) library.
 
-Tested with both python `2.7` and `3.4`.
+Tested with both python `2.7` and `3`.
+
+(Conceivably, the authentication class is flexible enough to be used with any AWS service, but it was initially created to interface with AWS Elasticsearch instances.)
 
 # Installation
 
 ```
 pip install aws-requests-auth
 ```
-
-# Motivation
-
-This code came about because Amazon's Elasticsearch Service [does not currently support VPC](https://forums.aws.amazon.com/thread.jspa?threadID=217059&tstart=0). This authentication class allows us to talk to our Elasticsearch cluster via [IAM](https://aws.amazon.com/iam/).
-
-Conceivably, the authentication class is flexible enough to be used with any AWS service that supports the signature version 4 signing process.  However, I've only tested it with the Elasticsearch service.
-
 
 # Usage
 
