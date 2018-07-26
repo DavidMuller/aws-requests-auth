@@ -180,6 +180,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         headers = {
             'Authorization': authorization_header,
             'x-amz-date': amzdate,
+            'x-amz-content-sha256': payload_hash
+
         }
         if aws_token:
             headers['X-Amz-Security-Token'] = aws_token

@@ -1,3 +1,4 @@
+.idea
 *.py[co]
 *.egg-info
 MANIFEST
