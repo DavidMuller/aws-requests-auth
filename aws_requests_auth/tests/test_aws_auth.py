@@ -1,4 +1,5 @@
 import datetime
+import hashlib
 import mock
 import sys
 import unittest
@@ -90,6 +91,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
                              'SignedHeaders=host;x-amz-date, '
                              'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
             'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest()
 
         }, mock_request.headers)
 
