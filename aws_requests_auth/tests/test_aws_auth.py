@@ -91,7 +91,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
                              'SignedHeaders=host;x-amz-date, '
                              'Signature=ca0a856286efce2a4bd96a978ca6c8966057e53184776c0685169d08abd74739',
             'x-amz-date': '20160618T220405Z',
-            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest()
+            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest(),
 
         }, mock_request.headers)
 
@@ -120,6 +120,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
                              'Signature=a6fd88e5f5c43e005482894001d9b05b43f6710e96be6098bcfcfccdeb8ed812',
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest(),
 
         }, mock_request.headers)
 
@@ -148,6 +149,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
                              'Signature=a6fd88e5f5c43e005482894001d9b05b43f6710e96be6098bcfcfccdeb8ed812',
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest(),
 
         }, mock_request.headers)
 
@@ -214,5 +216,6 @@ class TestAWSRequestsAuth(unittest.TestCase):
             'Signature=0836dae4bce95c1bcdbd3751c84c0c7e589ba7c81331bab92d0e1acb94adcdd9',
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest(),
 
         }, mock_request.headers)
