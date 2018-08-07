@@ -1,10 +1,10 @@
 import datetime
+import hashlib
 import os
 import unittest
 
 import mock
 
-from aws_requests_auth.aws_auth import AWSRequestsAuth
 from aws_requests_auth.boto_utils import BotoAWSRequestsAuth, get_credentials
 
 
@@ -54,6 +54,7 @@ class TestBotoUtils(unittest.TestCase):
                              'SignedHeaders=host;x-amz-date;x-amz-security-token, '
                              'Signature=9d35f096395c7aa5061e69aca897417dd41bb8fb01a465bb78343624f8f123bf',
             'x-amz-date': '20160618T220405Z',
-            'X-Amz-Security-Token': 'test-AWS_SESSION_TOKEN'
+            'X-Amz-Security-Token': 'test-AWS_SESSION_TOKEN',
+            'x-amz-content-sha256': hashlib.sha256(b'').hexdigest(),
 
         }, mock_request.headers)
