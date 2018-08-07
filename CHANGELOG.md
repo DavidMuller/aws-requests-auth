@@ -1,6 +1,12 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.4.2
+------------------
+- Add x-amz-content-sha256 header to request
+    - Contributed by @samuelsh: https://github.com/DavidMuller/aws-requests-auth/pull/37
+
+
 0.4.1
 ------------------
 - Allow utf-8 encoding failures for python2 on the request body for hashing
