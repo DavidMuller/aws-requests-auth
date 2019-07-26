@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/DavidMuller/aws-requests-auth.svg?branch=master)](https://travis-ci.org/DavidMuller/aws-requests-auth)
+![PyPI](https://img.shields.io/pypi/v/aws-requests-auth)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/aws-requests-auth)
+
 
 # AWS Signature Version 4 Signing Process with python requests
 

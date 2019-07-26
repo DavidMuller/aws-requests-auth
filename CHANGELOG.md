@@ -1,6 +1,12 @@
 Changelog (aws-requests-auth)
 ==================
 
+[DEV]
+------------------
+- Add support for Python 3.5 & 3.7
+- Remove support for Python 3.4
+
+
 0.4.2
 ------------------
 - Add x-amz-content-sha256 header to request
