@@ -106,3 +106,20 @@ auth = BotoAWSRequestsAuth(aws_host='search-service-foobar.us-east-1.es.amazonaw
 ```
 
 Credentials are only accessed when needed at runtime, and they will be refreshed using the underlying methods in `botocore` if needed.
+
+
+## AWS API Gateway example with IAM authentication and Boto automatic credentials
+
+If you are using AWS API Gateway with IAM authentication
+([ref](https://aws.amazon.com/premiumsupport/knowledge-center/iam-authentication-api-gateway/)),
+here's how to sign an HTTP request using automatic AWS credentials with boto
+
+```python
+from aws_requests_auth.boto_utils import BotoAWSRequestsAuth
+auth = BotoAWSRequestsAuth(aws_host='api.example.com',
+                           aws_region='us-east-1',
+                           aws_service='execute-api')
+
+import requests
+response = requests.request('POST', 'https://api.example.com/test', json={"foo": "bar"}, auth=auth)
+```
