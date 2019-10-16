@@ -121,5 +121,5 @@ auth = BotoAWSRequestsAuth(aws_host='api.example.com',
                            aws_service='execute-api')
 
 import requests
-response = requests.request('POST', 'https://api.example.com/test', json={"foo": "bar"}, auth=auth)
+response = requests.post('https://api.example.com/test', json={"foo": "bar"}, auth=auth)
 ```
