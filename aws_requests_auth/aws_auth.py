@@ -9,6 +9,13 @@ try:
 except ImportError:
     # python 3
     from urllib.parse import quote, urlparse
+    
+try:
+    # python 2
+    basestring
+except NameError:
+    # python 3
+    basestring = str
 
 import requests
 
@@ -131,7 +138,11 @@ class AWSRequestsAuth(requests.auth.AuthBase):
 
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
-        body = r.body if r.body else bytes()
+        if hasattr(r, "body"):
+            body = r.body if r.body else bytes()
+        else:
+            body = r.stream.body if r.stream and r.stream.body else bytes()
+
         try:
             body = body.encode('utf-8')
         except (AttributeError, UnicodeDecodeError):
@@ -192,7 +203,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         Create canonical URI--the part of the URI from domain to query
         string (use '/' if no path)
         """
-        parsedurl = urlparse(r.url)
+        if isinstance(r.url, basestring):
+            parsedurl = urlparse(r.url)
+        else:
+            parsedurl = r.url
 
         # safe chars adapted from boto's use of urllib.parse.quote
         # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L393
@@ -220,7 +234,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         """
         canonical_querystring = ''
 
-        parsedurl = urlparse(r.url)
+        if isinstance(r.url, basestring):
+            parsedurl = urlparse(r.url)
+        else:
+            parsedurl = r.url
         querystring_sorted = '&'.join(sorted(parsedurl.query.split('&')))
 
         for query_param in querystring_sorted.split('&'):
