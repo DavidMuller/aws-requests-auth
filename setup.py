@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='aws-requests-auth',
-    version='0.4.2',
+    version='0.4.3',
     author='David Muller',
     author_email='davehmuller@gmail.com',
     packages=['aws_requests_auth'],
