@@ -1,6 +1,11 @@
 Changelog (aws-requests-auth)
 ==================
 
+0.4.3
+------------------
+- Also publish the package as a wheel
+    - Contributed by @kgaughan: https://github.com/DavidMuller/aws-requests-auth/issues/54
+
 0.4.2
 ------------------
 - Add x-amz-content-sha256 header to request
