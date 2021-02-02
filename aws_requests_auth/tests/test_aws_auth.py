@@ -5,6 +5,7 @@ import sys
 import unittest
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 
 class TestAWSRequestsAuth(unittest.TestCase):
@@ -150,6 +151,35 @@ class TestAWSRequestsAuth(unittest.TestCase):
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
             'x-amz-content-sha256': hashlib.sha256(mock_request.body.encode()).hexdigest(),
+
+        }, mock_request.headers)
+
+    def test_auth_for_post_with_multipart_body(self):
+        auth = AWSRequestsAuth(aws_access_key='YOURKEY',
+                               aws_secret_access_key='YOURSECRET',
+                               aws_host='search-foo.us-east-1.es.amazonaws.com',
+                               aws_region='us-east-1',
+                               aws_service='es')
+        url = 'http://search-foo.us-east-1.es.amazonaws.com:80/'
+        mock_request = mock.Mock()
+        mock_request.url = url
+        mock_request.method = "POST"
+        mock_request.body = MultipartEncoder(fields={'foo': 'bar'}, boundary='test')
+        mock_request.headers = {
+            'Content-Type': 'multipart/form-data; boundary=test',
+        }
+
+        frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
+        with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = frozen_datetime
+            auth(mock_request)
+        self.assertEqual({
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+                             'SignedHeaders=host;x-amz-date, '
+                             'Signature=3a49a96a093e8ae5a9c59827117741d1627d8462eac7542220dabc317e92b1f7',
+            'Content-Type': 'multipart/form-data; boundary=test',
+            'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(mock_request.body).hexdigest(),
 
         }, mock_request.headers)
 

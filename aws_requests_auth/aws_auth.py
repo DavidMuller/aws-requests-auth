@@ -129,6 +129,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         if aws_token:
             signed_headers += ';x-amz-security-token'
 
+        # Materialize body if it is a generator (e.g. toolbelt's MultipartEncoder instance)
+        if r.body and hasattr(r.body, 'to_string'):
+            r.body = r.body.to_string()
+
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
         body = r.body if r.body else bytes()
