@@ -43,6 +43,21 @@ print response.content
 }
 ```
 
+## Support
+
+If this piece of software brought value to you/your organization...
+
+Check out my new book [**Intuitive Python: Productive Development for Projects that Last**](https://pragprog.com/titles/dmpython/intuitive-python/)
+
+<p align="center">
+    <a href="https://pragprog.com/titles/dmpython/intuitive-python/">
+      <img src="https://pragprog.com/titles/dmpython/intuitive-python/dmpython-beta-250.jpg">
+    </a>
+</p>
+
+
+> Developers power their projects with Python because it emphasizes readability, ease of use, and access to a meticulously maintained set of packages and tools. The language itself continues to improve with every release: writing in Python is full of possibility. But to maintain a successful Python project, you need to know more than just the language. You need tooling and instincts to help you make the most out of what’s available to you. Use this book as your guide to help you hone your skills and sculpt a Python project that can stand the test of time.
+
 ## elasticsearch-py Client Usage Example
 
 It's possible to inject the `AWSRequestsAuth` class directly into the [elasticsearch-py](https://elasticsearch-py.readthedocs.org/en/master/) library so you can talk to your Amazon AWS cluster directly through the elasticsearch-py client.
