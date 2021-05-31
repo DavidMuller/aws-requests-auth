@@ -51,7 +51,7 @@ Check out my new book [**Intuitive Python: Productive Development for Projects t
 
 <p align="center">
     <a href="https://pragprog.com/titles/dmpython/intuitive-python/">
-      <img src="https://pragprog.com/titles/dmpython/intuitive-python/dmpython-beta-250.jpg">
+      <img src="https://user-images.githubusercontent.com/4778701/120227600-52cdb900-c1fe-11eb-897d-2e00e16a4793.jpeg">
     </a>
 </p>
 
