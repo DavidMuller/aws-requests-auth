@@ -45,7 +45,8 @@ class AWSRequestsAuth(requests.auth.AuthBase):
                  aws_host,
                  aws_region,
                  aws_service,
-                 aws_token=None):
+                 aws_token=None,
+                 misc_sign_headers=None):
         """
         Example usage for talking to an AWS Elasticsearch Service:
 
@@ -65,6 +66,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         self.aws_region = aws_region
         self.service = aws_service
         self.aws_token = aws_token
+        self.misc_sign_headers = misc_sign_headers
 
     def __call__(self, r):
         """
@@ -88,9 +90,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         return self.get_aws_request_headers(r=r,
                                             aws_access_key=self.aws_access_key,
                                             aws_secret_access_key=self.aws_secret_access_key,
-                                            aws_token=self.aws_token)
+                                            aws_token=self.aws_token,
+                                            misc_sign_headers=self.misc_sign_headers)
 
-    def get_aws_request_headers(self, r, aws_access_key, aws_secret_access_key, aws_token):
+    def get_aws_request_headers(self, r, aws_access_key, aws_secret_access_key, aws_token, misc_sign_headers):
         """
         Returns a dictionary containing the necessary headers for Amazon's
         signature version 4 signing process. An example return value might
@@ -128,6 +131,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         signed_headers = 'host;x-amz-date'
         if aws_token:
             signed_headers += ';x-amz-security-token'
+
+        # Sign additional headers in request
+        if misc_sign_headers:
+            signed_headers += ";" + ";".join(misc_sign_headers)
 
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
