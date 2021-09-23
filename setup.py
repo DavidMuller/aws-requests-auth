@@ -10,7 +10,10 @@ setup(
     url='https://github.com/davidmuller/aws-requests-auth',
     description='AWS signature version 4 signing process for the python requests module',
     long_description='See https://github.com/davidmuller/aws-requests-auth for installation and usage instructions.',
-    install_requires=['requests>=0.14.0'],
+    install_requires=[
+        'botocore<2.0',
+        'requests>=0.14.0',
+    ],
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
