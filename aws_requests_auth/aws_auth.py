@@ -132,16 +132,34 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').
         body = r.body if r.body else bytes()
-        try:
-            body = body.encode('utf-8')
-        except (AttributeError, UnicodeDecodeError):
-            # On py2, if unicode characters in present in `body`,
-            # encode() throws UnicodeDecodeError, but we can safely
-            # pass unencoded `body` to execute hexdigest().
-            #
-            # For py3, encode() will execute successfully regardless
-            # of the presence of unicode data
-            body = body
+
+        # check if the body is a stream like object
+        if body and hasattr(r.body, 'read'):
+            try:
+                # read the entire stream until EOF
+                # this should return a byte array like object
+                body = body.read()
+                try:
+                    # check if it's a byte array like object
+                    body.decode()
+                    # we need to set the request body as the new byte array
+                    # as we already consumed the stream
+                    r.body = body
+                except (UnicodeDecodeError, AttributeError):
+                    raise TypeError('read did not return bytes like object')
+            except OSError as e:
+                raise e
+        else:
+            try:
+                body = body.encode('utf-8')
+            except (AttributeError, UnicodeDecodeError):
+                # On py2, if unicode characters in present in `body`,
+                # encode() throws UnicodeDecodeError, but we can safely
+                # pass unencoded `body` to execute hexdigest().
+                #
+                # For py3, encode() will execute successfully regardless
+                # of the presence of unicode data
+                body = body
 
         payload_hash = hashlib.sha256(body).hexdigest()
 

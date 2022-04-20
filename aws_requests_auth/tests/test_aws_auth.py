@@ -2,6 +2,7 @@ import datetime
 import hashlib
 import mock
 import sys
+import io
 import unittest
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
@@ -150,6 +151,35 @@ class TestAWSRequestsAuth(unittest.TestCase):
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
             'x-amz-content-sha256': hashlib.sha256(mock_request.body.encode()).hexdigest(),
+
+        }, mock_request.headers)
+
+    def test_auth_for_put_with_stream_body(self):
+        auth = AWSRequestsAuth(aws_access_key='YOURKEY',
+                               aws_secret_access_key='YOURSECRET',
+                               aws_host='search-foo.us-east-1.es.amazonaws.com',
+                               aws_region='us-east-1',
+                               aws_service='es')
+        url = 'http://search-foo.us-east-1.es.amazonaws.com:80/'
+        mock_request = mock.Mock()
+        mock_request.url = url
+        mock_request.method = "PUT"
+        mock_request.body = io.BytesIO(b"binary data: \x00\x01")
+        mock_request.headers = {
+            'Content-Type': 'application/octet-stream',
+        }
+
+        frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
+        with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = frozen_datetime
+            auth(mock_request)
+        self.assertEqual({
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+                             'SignedHeaders=host;x-amz-date, '
+                             'Signature=9add35a4e7b0e6a54a7cebe5d2a60837ea6a19f4724fafc51dcd10f701e60f76',
+            'Content-Type': 'application/octet-stream',
+            'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(io.BytesIO(b"binary data: \x00\x01").read()).hexdigest(),
 
         }, mock_request.headers)
 
