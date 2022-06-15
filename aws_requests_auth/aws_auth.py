@@ -1,6 +1,7 @@
 import hmac
 import hashlib
 import datetime
+from io import BufferedIOBase
 
 try:
     # python 2
@@ -128,6 +129,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         signed_headers = 'host;x-amz-date'
         if aws_token:
             signed_headers += ';x-amz-security-token'
+
+        # Materialize body if it is a Reader/BufferedReader
+        if isinstance(r.body, BufferedIOBase):
+            r.body = r.body.read()
 
         # Create payload hash (hash of the request body content). For GET
         # requests, the payload is an empty string ('').

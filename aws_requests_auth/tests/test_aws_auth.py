@@ -3,6 +3,7 @@ import hashlib
 import mock
 import sys
 import unittest
+from io import BufferedReader, BytesIO
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
@@ -218,5 +219,40 @@ class TestAWSRequestsAuth(unittest.TestCase):
             'Content-Type': 'application/x-www-form-urlencoded',
             'x-amz-date': '20160618T220405Z',
             'x-amz-content-sha256': hashlib.sha256(mock_request.body.encode()).hexdigest(),
+
+        }, mock_request.headers)
+
+    @unittest.skipIf(
+        int(sys.version[0]) < 3,
+        'python3 produces a different hash that we\'re comparing.'
+    )
+    def test_auth_for_post_with_buffered_reader_body(self):
+        self.maxDiff = None
+        auth = AWSRequestsAuth(aws_access_key='YOURKEY',
+                               aws_secret_access_key='YOURSECRET',
+                               aws_host='search-foo.us-east-1.es.amazonaws.com',
+                               aws_region='us-east-1',
+                               aws_service='es')
+        url = 'http://search-foo.us-east-1.es.amazonaws.com:80/'
+        body = b'{"foo":"bar"}'
+        mock_request = mock.Mock()
+        mock_request.url = url
+        mock_request.method = "POST"
+        mock_request.body = BufferedReader(BytesIO(body))
+        mock_request.headers = {
+            'Content-Type': 'application/json',
+        }
+
+        frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
+        with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = frozen_datetime
+            auth(mock_request)
+        self.assertEqual({
+            'Authorization': 'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/es/aws4_request, '
+                             'SignedHeaders=host;x-amz-date, '
+                             'Signature=9726d4d0214a875dcaca166e0599dd4ff94816f1cf9d43351d3b2521928b1823',
+            'Content-Type': 'application/json',
+            'x-amz-date': '20160618T220405Z',
+            'x-amz-content-sha256': hashlib.sha256(body).hexdigest(),
 
         }, mock_request.headers)
