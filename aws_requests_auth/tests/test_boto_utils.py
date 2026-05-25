@@ -47,6 +47,7 @@ class TestBotoUtils(unittest.TestCase):
 
         frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
         with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.now.return_value = frozen_datetime
             mock_datetime.utcnow.return_value = frozen_datetime
             boto_auth_inst(mock_request)
         self.assertEqual({

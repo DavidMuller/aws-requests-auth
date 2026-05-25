@@ -104,7 +104,10 @@ class AWSRequestsAuth(requests.auth.AuthBase):
             }
         """
         # Create a date for headers and the credential string
-        t = datetime.datetime.utcnow()
+        try:
+            t = datetime.datetime.now(datetime.timezone.utc)
+        except AttributeError:
+            t = datetime.datetime.utcnow()
         amzdate = t.strftime('%Y%m%dT%H%M%SZ')
         datestamp = t.strftime('%Y%m%d')  # Date w/o time for credential_scope
 

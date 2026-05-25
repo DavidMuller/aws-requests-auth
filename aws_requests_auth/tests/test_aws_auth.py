@@ -84,6 +84,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
 
         frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
         with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.now.return_value = frozen_datetime
             mock_datetime.utcnow.return_value = frozen_datetime
             auth(mock_request)
         self.assertEqual({
@@ -112,6 +113,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
 
         frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
         with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.now.return_value = frozen_datetime
             mock_datetime.utcnow.return_value = frozen_datetime
             auth(mock_request)
         self.assertEqual({
@@ -141,6 +143,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
 
         frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
         with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.now.return_value = frozen_datetime
             mock_datetime.utcnow.return_value = frozen_datetime
             auth(mock_request)
         self.assertEqual({
@@ -174,6 +177,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
 
         frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
         with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.now.return_value = frozen_datetime
             mock_datetime.utcnow.return_value = frozen_datetime
             auth(mock_request)
 
@@ -208,6 +212,7 @@ class TestAWSRequestsAuth(unittest.TestCase):
 
         frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
         with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.now.return_value = frozen_datetime
             mock_datetime.utcnow.return_value = frozen_datetime
             auth(mock_request)
 
