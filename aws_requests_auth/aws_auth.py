@@ -5,10 +5,10 @@ import datetime
 try:
     # python 2
     from urllib import quote
-    from urlparse import urlparse
+    from urlparse import urlparse, urlsplit
 except ImportError:
     # python 3
-    from urllib.parse import quote, urlparse
+    from urllib.parse import quote, urlparse, urlsplit
 
 import requests
 
@@ -192,7 +192,7 @@ class AWSRequestsAuth(requests.auth.AuthBase):
         Create canonical URI--the part of the URI from domain to query
         string (use '/' if no path)
         """
-        parsedurl = urlparse(r.url)
+        parsedurl = urlsplit(r.url)
 
         # safe chars adapted from boto's use of urllib.parse.quote
         # https://github.com/boto/boto/blob/d9e5cfe900e1a58717e393c76a6e3580305f217a/boto/auth.py#L393

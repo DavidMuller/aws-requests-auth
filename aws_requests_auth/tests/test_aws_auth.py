@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import mock
+import requests
 import sys
 import unittest
 
@@ -47,6 +48,39 @@ class TestAWSRequestsAuth(unittest.TestCase):
         mock_request.url = url
         self.assertEqual('/my_index/', AWSRequestsAuth.get_canonical_path(mock_request))
         self.assertEqual('pretty=True', AWSRequestsAuth.get_canonical_querystring(mock_request))
+
+    def test_path_with_matrix_parameters(self):
+        """Keep path parameters regardless of which path segment has them."""
+        paths = [
+            ('/user;name=Piet;surname=Pompies', '/user%3Bname%3DPiet%3Bsurname%3DPompies'),
+            ('/user;name=Piet/details', '/user%3Bname%3DPiet/details'),
+            ('/user;name=Piet/details;page=2', '/user%3Bname%3DPiet/details%3Bpage%3D2'),
+            ('/user;', '/user%3B'),
+        ]
+        for path, expected in paths:
+            mock_request = mock.Mock()
+            mock_request.url = 'https://example.com' + path + '?sort=name#fragment'
+            self.assertEqual(expected, AWSRequestsAuth.get_canonical_path(mock_request), path)
+            self.assertEqual('sort=name', AWSRequestsAuth.get_canonical_querystring(mock_request), path)
+
+    def test_auth_for_path_with_matrix_parameters(self):
+        auth = AWSRequestsAuth(aws_access_key='YOURKEY',
+                               aws_secret_access_key='YOURSECRET',
+                               aws_host='example.com',
+                               aws_region='us-east-1',
+                               aws_service='execute-api')
+        request = requests.Request('GET', 'https://example.com/user;name=Piet;surname=Pompies?sort=name').prepare()
+        frozen_datetime = datetime.datetime(2016, 6, 18, 22, 4, 5)
+        with mock.patch('datetime.datetime') as mock_datetime:
+            mock_datetime.utcnow.return_value = frozen_datetime
+            auth(request)
+        # Verified against botocore's SigV4Auth for the same request and timestamp.
+        self.assertEqual(
+            'AWS4-HMAC-SHA256 Credential=YOURKEY/20160618/us-east-1/execute-api/aws4_request, '
+            'SignedHeaders=host;x-amz-date, '
+            'Signature=5abd53b16afdf7beeb15523bdc68a629f6d8b166ff440dba03162b857269e0b5',
+            request.headers['Authorization'],
+        )
 
     def test_multiple_get_params(self):
         """
